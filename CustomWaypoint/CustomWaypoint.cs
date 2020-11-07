@@ -48,6 +48,14 @@ namespace CustomWaypoint
             
             List<string> Folders = new List<string>();
 
+            Texture2D[] array1 = new Texture2D[]
+                  {
+                        null,
+                        SCREEN_MANAGER.MenuArt[225]
+                  };
+
+            MenuArt = array1;
+
             if (System.IO.Directory.Exists(SteamModsDirectory))
             {
                 var dirs = from dir in
@@ -87,17 +95,6 @@ namespace CustomWaypoint
                     };
 
                     MenuArt = array;
-                }
-                else
-                {
-                    Texture2D[] array = new Texture2D[]
-                   {
-                        null,
-                        SCREEN_MANAGER.MenuArt[225]
-                   };
-
-                    MenuArt = array;
-
                 }
             }
 
@@ -356,7 +353,7 @@ namespace CustomWaypoint
                         }
                     }
                 }
-            CHAT_MANAGER.Draw(batch);
+            //CHAT_MANAGER.Draw(batch);
             batch.End();
         } 
     }
