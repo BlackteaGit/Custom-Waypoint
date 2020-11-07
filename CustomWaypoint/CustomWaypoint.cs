@@ -26,7 +26,13 @@ namespace CustomWaypoint
             harmony.PatchAll();
         }
     }
- 
+
+    public class Globals
+    {
+        public static Dictionary<string, GreenArrow> ArrowsStored = new Dictionary<string, GreenArrow>();
+      
+    }
+
     [HarmonyPatch(typeof(UNavigationRev2), "Draw")]
         public class UNavigationRev2_Draw
         {
@@ -158,30 +164,32 @@ namespace CustomWaypoint
         [HarmonyPrefix]
         private static void Prefix(ref Dictionary<string, GreenArrow> __state)
         {
+            /*
             __state = new Dictionary<string, GreenArrow>();
             Dictionary<string, GreenArrow> greenArrows = CoOpSpRpG.PLAYER.greenArrows;
             foreach (var newArrow in greenArrows)
                 __state.Add(newArrow.Key, newArrow.Value);
+                
             CoOpSpRpG.PLAYER.greenArrows.Clear();
             var test = CoOpSpRpG.PLAYER.greenArrows;
             test.Clear();
+            */
         }
 
         [HarmonyPostfix]
         private static void Postfix(Dictionary<string, GreenArrow> __state, SpriteBatch batch, ref Vector2 ___screenCenter, ref int ___screenHeight, ref ScaleBox ___distanceBox, ref Vector2 ___distBoxTextOffset, ref Vector2 ___arrowUnderOffset, ref float ___uiAlphaPhase, ref float ___constantScale, Vector3 ___cameraPos)
         {
-            Color arrowColor = new Color(175, 98, 199);
-            CoOpSpRpG.PLAYER.greenArrows = __state;
+            Color arrowColor = new Color(181, 110, 203); //new Color(175, 98, 199);           
 
             bool flag58 = ___uiAlphaPhase > 0f;
             if (flag58)
             {
-                bool flag = PLAYER.greenArrows.Count > 0;
+                bool flag = Globals.ArrowsStored.Count > 0;
                 checked
                 {
                     if (flag)
                     {
-                        foreach (KeyValuePair<string, GreenArrow> greenArrow in PLAYER.greenArrows)
+                        foreach (KeyValuePair<string, GreenArrow> greenArrow in Globals.ArrowsStored)
                         {
                             bool flag2 = greenArrow.Value.source == null || (greenArrow.Value.source != null && greenArrow.Value.source.tracked);
                             if (flag2)
@@ -192,23 +200,48 @@ namespace CustomWaypoint
                                     bool flag4 = greenArrow.Value.grid == PLAYER.currentSession.grid;
                                     if (flag4)
                                     {
-                                        float distance = Vector2.Distance(PLAYER.currentShip.position, greenArrow.Value.position);
-                                        string text = SCREEN_MANAGER.formatDistanceString(distance);
-                                        Vector2 vector = ___screenCenter + Vector2.Normalize(greenArrow.Value.position - PLAYER.currentShip.position) * (float)(___screenHeight / 3 - 15);
-                                        ___distanceBox.position = vector;
-                                        ___distBoxTextOffset.X = (float)((0 - text.Length) * 4);
-                                        batch.Draw(SCREEN_MANAGER.GameArt[131], vector - ___arrowUnderOffset, Color.LightGreen * ___uiAlphaPhase);
-                                        try
+                                        if (greenArrow.Key == "player_assigned")
                                         {
-                                            batch.DrawString(SCREEN_MANAGER.FF14reg, text, ___distanceBox.position + ___distBoxTextOffset, Color.LightGreen * ___uiAlphaPhase, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                                            float distance = Vector2.Distance(PLAYER.currentShip.position, greenArrow.Value.position);
+                                            string text = SCREEN_MANAGER.formatDistanceString(distance);
+                                            Vector2 vector = ___screenCenter + Vector2.Normalize(greenArrow.Value.position - PLAYER.currentShip.position) * (float)(___screenHeight / 3 - 15);
+                                            ___distanceBox.position = vector;
+                                            ___distBoxTextOffset.X = (float)((0 - text.Length) * 4);
+                                            batch.Draw(SCREEN_MANAGER.GameArt[131], vector - ___arrowUnderOffset, arrowColor * ___uiAlphaPhase);
+                                            try
+                                            {
+                                                batch.DrawString(SCREEN_MANAGER.FF14reg, text, ___distanceBox.position + ___distBoxTextOffset, arrowColor * ___uiAlphaPhase, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                                            }
+                                            catch
+                                            {
+                                            }
+                                            bool flag5 = SCREEN_MANAGER.questJournal != null;
+                                            if (flag5)
+                                            {
+                                                SCREEN_MANAGER.questJournal.AssignDistance(text, distance, greenArrow.Value.source);
+                                            }
                                         }
-                                        catch
+                                        else
                                         {
-                                        }
-                                        bool flag5 = SCREEN_MANAGER.questJournal != null;
-                                        if (flag5)
-                                        {
-                                            SCREEN_MANAGER.questJournal.AssignDistance(text, distance, greenArrow.Value.source);
+                                            float distance = Vector2.Distance(PLAYER.currentShip.position, greenArrow.Value.position);
+                                            string text = SCREEN_MANAGER.formatDistanceString(distance);
+                                            Vector2 vector = ___screenCenter + Vector2.Normalize(greenArrow.Value.position - PLAYER.currentShip.position) * (float)(___screenHeight / 3 - 15);
+                                            ___distanceBox.position = vector;
+                                            ___distBoxTextOffset.X = (float)((0 - text.Length) * 4);
+                                            batch.Draw(SCREEN_MANAGER.GameArt[131], vector - ___arrowUnderOffset, Color.LightGreen * ___uiAlphaPhase);
+                                            try
+                                            {
+                                                batch.DrawString(SCREEN_MANAGER.FF14reg, text, ___distanceBox.position + ___distBoxTextOffset, Color.LightGreen * ___uiAlphaPhase, 0f, Vector2.Zero, 1f, SpriteEffects.None, 0f);
+                                            }
+                                            catch
+                                            {
+                                            }
+                                            bool flag5 = SCREEN_MANAGER.questJournal != null;
+                                            if (flag5)
+                                            {
+                                                SCREEN_MANAGER.questJournal.AssignDistance(text, distance, greenArrow.Value.source);
+                                            }
+
                                         }
                                     }
                                     else
@@ -270,4 +303,62 @@ namespace CustomWaypoint
             }
         }
     }
+
+    [HarmonyPatch(typeof(VNavigationRev3), "Draw")]
+    public class VNavigationRev3_Draw
+    {
+
+
+        [HarmonyPrefix]
+        private static void Prefix(ref Dictionary<string, GreenArrow> __state)
+        {
+            __state = new Dictionary<string, GreenArrow>();
+            Globals.ArrowsStored.Clear();
+            Dictionary<string, GreenArrow> greenArrows = CoOpSpRpG.PLAYER.greenArrows;
+            foreach (var newArrow in greenArrows)
+            { 
+            Globals.ArrowsStored.Add(newArrow.Key, newArrow.Value);
+            __state.Add(newArrow.Key, newArrow.Value);
+            }
+            CoOpSpRpG.PLAYER.greenArrows.Clear();
+        }
+
+        [HarmonyPostfix]
+        private static void Postfix(Dictionary<string, GreenArrow> __state, SpriteBatch batch, ref Vector2 ___screenCenter, ref int ___screenHeight, ref ScaleBox ___distanceBox, ref Vector2 ___distBoxTextOffset, ref Vector2 ___arrowUnderOffset, ref float ___uiAlphaPhase, ref float ___constantScale, Vector3 ___cameraPos)
+        {
+            //Color arrowColor = new Color(175, 98, 199);
+            Color arrowColor = new Color(234, 163, 255);
+            CoOpSpRpG.PLAYER.greenArrows = __state;
+
+            LIGHTBAG.reset();
+            SCREEN_MANAGER.spriteBasic.CurrentTechnique = SCREEN_MANAGER.spriteBasicPixel;
+            batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, SCREEN_MANAGER.spriteBasic, null);
+             
+                bool flag56 = PLAYER.greenArrows.Count > 0;
+                if (flag56)
+                {
+                    foreach (KeyValuePair<string, GreenArrow> greenArrow in CoOpSpRpG.PLAYER.greenArrows)
+                    {
+                        if (greenArrow.Key == "player_assigned")
+                        { 
+                            if (greenArrow.Value.grid == PLAYER.currentSession.grid)
+                            {
+                                batch.Draw(SCREEN_MANAGER.GameArt[32], greenArrow.Value.position, null, arrowColor, 0f, UNavigation.iconHomeffset, ___constantScale, SpriteEffects.None, 0.3f);
+                            }
+                        }
+                        else
+                        {
+                            if (greenArrow.Value.grid == PLAYER.currentSession.grid)
+                            {
+                                batch.Draw(SCREEN_MANAGER.GameArt[32], greenArrow.Value.position, null, Color.LightGreen, 0f, UNavigation.iconHomeffset, ___constantScale, SpriteEffects.None, 0.3f);
+                            }
+
+                        }
+                    }
+                }
+            CHAT_MANAGER.Draw(batch);
+            batch.End();
+        } 
+    }
+
 }
