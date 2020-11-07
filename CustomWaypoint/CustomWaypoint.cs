@@ -82,6 +82,17 @@ namespace CustomWaypoint
 
                     MenuArt = array;
                 }
+                else
+                {
+                    Texture2D[] array = new Texture2D[]
+                   {
+                        null,
+                        SCREEN_MANAGER.MenuArt[225]
+                   };
+
+                    MenuArt = array;
+
+                }
             }
 
             Game1.instance.Content.RootDirectory = "Content";
@@ -117,7 +128,7 @@ namespace CustomWaypoint
                                 vector.Y = (float)(entry.Value.grid.Y * 256);
                                 if (entry.Key == "player_assigned")
                                 {
-                                    if (MenuArt[1] != null)
+                                    if (!(MenuArt[1] is null) && !(MenuArt is null))
                                     { 
                                     batch.Draw(MenuArt[1], vector + entry.Value.position / 781.25f, new Rectangle?(___greenArrowIcon), Color.White, 0f, UNavigationRev2.iconEconOffset, ___constantScale, SpriteEffects.None, 0f);
                                     }
@@ -139,8 +150,8 @@ namespace CustomWaypoint
             }
         }
 
-    [HarmonyPatch(typeof(VNavigationRev3), "Draw")]
-    public class VNavigationRev3_Draw
+    [HarmonyPatch(typeof(VNavigationRev3), "drawUI")]
+    public class VNavigationRev3_drawUI
     {
 
 
@@ -152,10 +163,12 @@ namespace CustomWaypoint
             foreach (var newArrow in greenArrows)
                 __state.Add(newArrow.Key, newArrow.Value);
             CoOpSpRpG.PLAYER.greenArrows.Clear();
+            var test = CoOpSpRpG.PLAYER.greenArrows;
+            test.Clear();
         }
 
         [HarmonyPostfix]
-        private static void Postfix(Dictionary<string, GreenArrow> __state, SpriteBatch batch, ref Vector2 ___screenCenter, ref int ___screenHeight, ref ScaleBox ___distanceBox, ref Vector2 ___distBoxTextOffset, ref Vector2 ___arrowUnderOffset, ref float ___uiAlphaPhase, ref float ___constantScale)
+        private static void Postfix(Dictionary<string, GreenArrow> __state, SpriteBatch batch, ref Vector2 ___screenCenter, ref int ___screenHeight, ref ScaleBox ___distanceBox, ref Vector2 ___distBoxTextOffset, ref Vector2 ___arrowUnderOffset, ref float ___uiAlphaPhase, ref float ___constantScale, Vector3 ___cameraPos)
         {
             Color arrowColor = new Color(175, 98, 199);
             CoOpSpRpG.PLAYER.greenArrows = __state;
@@ -163,9 +176,6 @@ namespace CustomWaypoint
             bool flag58 = ___uiAlphaPhase > 0f;
             if (flag58)
             {
-                batch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, SCREEN_MANAGER.spriteBasic, null);
-
-
                 bool flag = PLAYER.greenArrows.Count > 0;
                 checked
                 {
@@ -256,27 +266,8 @@ namespace CustomWaypoint
                         }
                     }
                 }
-                batch.End();
-                batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, SCREEN_MANAGER.spriteBasic, null);
-                bool flag27 = ___uiAlphaPhase > 0f;
-                if (flag27)
-                {
-                    bool flag56 = PLAYER.greenArrows.Count > 0;
-                    if (flag56)
-                    {
-                        foreach (GreenArrow greenArrow in PLAYER.greenArrows.Values)
-                        {
-                            bool flag57 = greenArrow.grid == PLAYER.currentSession.grid;
-                            if (flag57)
-                            {
-                                batch.Draw(SCREEN_MANAGER.GameArt[32], greenArrow.position, null, Color.LightGreen, 0f, UNavigation.iconHomeffset, ___constantScale, SpriteEffects.None, 0.3f);
-                            }
-                        }
-                    }
-                }
-                batch.End();
+              
             }
-
         }
     }
 }
