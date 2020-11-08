@@ -1,18 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using HarmonyLib;
 using CoOpSpRpG;
-using System.Reflection;
-using System.IO;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using Microsoft.Xna.Framework.Input;
 using WTFModLoader;
 using WTFModLoader.Manager;
-using Microsoft.Xna.Framework.Content;
 
 
 namespace CustomWaypoint
@@ -158,25 +152,10 @@ namespace CustomWaypoint
     {
 
 
-        [HarmonyPrefix]
-        private static void Prefix(ref Dictionary<string, GreenArrow> __state)
-        {
-            /*
-            __state = new Dictionary<string, GreenArrow>();
-            Dictionary<string, GreenArrow> greenArrows = CoOpSpRpG.PLAYER.greenArrows;
-            foreach (var newArrow in greenArrows)
-                __state.Add(newArrow.Key, newArrow.Value);
-                
-            CoOpSpRpG.PLAYER.greenArrows.Clear();
-            var test = CoOpSpRpG.PLAYER.greenArrows;
-            test.Clear();
-            */
-        }
-
         [HarmonyPostfix]
         private static void Postfix(Dictionary<string, GreenArrow> __state, SpriteBatch batch, ref Vector2 ___screenCenter, ref int ___screenHeight, ref ScaleBox ___distanceBox, ref Vector2 ___distBoxTextOffset, ref Vector2 ___arrowUnderOffset, ref float ___uiAlphaPhase, ref float ___constantScale, Vector3 ___cameraPos)
         {
-            Color arrowColor = new Color(181, 110, 203); //new Color(175, 98, 199);           
+            Color arrowColor = new Color(181, 110, 203); 
 
             bool flag58 = ___uiAlphaPhase > 0f;
             if (flag58)
@@ -323,7 +302,6 @@ namespace CustomWaypoint
         [HarmonyPostfix]
         private static void Postfix(Dictionary<string, GreenArrow> __state, SpriteBatch batch, ref Vector2 ___screenCenter, ref int ___screenHeight, ref ScaleBox ___distanceBox, ref Vector2 ___distBoxTextOffset, ref Vector2 ___arrowUnderOffset, ref float ___uiAlphaPhase, ref float ___constantScale, Vector3 ___cameraPos)
         {
-            //Color arrowColor = new Color(175, 98, 199);
             Color arrowColor = new Color(234, 163, 255);
             CoOpSpRpG.PLAYER.greenArrows = __state;
 
@@ -353,7 +331,6 @@ namespace CustomWaypoint
                         }
                     }
                 }
-            //CHAT_MANAGER.Draw(batch);
             batch.End();
         } 
     }
