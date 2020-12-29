@@ -107,16 +107,14 @@ namespace CustomWaypoint
             
             CoOpSpRpG.PLAYER.greenArrows = __state;
 
-                bool flag9 = ___cameraPos.Z <= 64000f;
                 checked
                 {
-                    if (flag9)
+                    if (___cameraPos.Z <= 64000f)
                     {
                         SCREEN_MANAGER.spriteBasic.CurrentTechnique = SCREEN_MANAGER.spriteBasicPixelNO;
                         SCREEN_MANAGER.spriteBasicIntensity.SetValue(1.85f);
                         batch.Begin(SpriteSortMode.Immediate, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, SCREEN_MANAGER.spriteBasic, null);
-                        bool flag10 = PLAYER.currentWorld != null;
-                        if (flag10)
+                        if (PLAYER.currentWorld != null)
                         {
                             Vector2 vector = new Vector2((float)(PLAYER.currentSession.grid.X * 256), (float)(PLAYER.currentSession.grid.Y * 256));
                             foreach (KeyValuePair<string, GreenArrow> entry in PLAYER.greenArrows)
@@ -167,14 +165,11 @@ namespace CustomWaypoint
                     {
                         foreach (KeyValuePair<string, GreenArrow> greenArrow in Globals.ArrowsStored)
                         {
-                            bool flag2 = greenArrow.Value.source == null || (greenArrow.Value.source != null && greenArrow.Value.source.tracked);
-                            if (flag2)
+                            if (greenArrow.Value.source == null || (greenArrow.Value.source != null && greenArrow.Value.source.tracked))
                             {
-                                bool flag3 = greenArrow.Value.position != PLAYER.currentShip.position;
-                                if (flag3)
+                                if (greenArrow.Value.position != PLAYER.currentShip.position)
                                 {
-                                    bool flag4 = greenArrow.Value.grid == PLAYER.currentSession.grid;
-                                    if (flag4)
+                                    if (greenArrow.Value.grid == PLAYER.currentSession.grid)
                                     {
                                         if (greenArrow.Key == "player_assigned")
                                         {
@@ -191,8 +186,7 @@ namespace CustomWaypoint
                                             catch
                                             {
                                             }
-                                            bool flag5 = SCREEN_MANAGER.questJournal != null;
-                                            if (flag5)
+                                            if (SCREEN_MANAGER.questJournal != null)
                                             {
                                                 SCREEN_MANAGER.questJournal.AssignDistance(text, distance, greenArrow.Value.source);
                                             }
@@ -212,8 +206,7 @@ namespace CustomWaypoint
                                             catch
                                             {
                                             }
-                                            bool flag5 = SCREEN_MANAGER.questJournal != null;
-                                            if (flag5)
+                                            if (SCREEN_MANAGER.questJournal != null)
                                             {
                                                 SCREEN_MANAGER.questJournal.AssignDistance(text, distance, greenArrow.Value.source);
                                             }
@@ -239,8 +232,7 @@ namespace CustomWaypoint
                                             catch
                                             {
                                             }
-                                            bool flag6 = SCREEN_MANAGER.questJournal != null;
-                                            if (flag6)
+                                            if (SCREEN_MANAGER.questJournal != null)
                                             {
                                                 SCREEN_MANAGER.questJournal.AssignDistance(text2, distance2, greenArrow.Value.source);
                                             }
@@ -263,8 +255,7 @@ namespace CustomWaypoint
                                             catch
                                             {
                                             }
-                                            bool flag6 = SCREEN_MANAGER.questJournal != null;
-                                            if (flag6)
+                                            if (SCREEN_MANAGER.questJournal != null)
                                             {
                                                 SCREEN_MANAGER.questJournal.AssignDistance(text2, distance2, greenArrow.Value.source);
                                             }
@@ -309,8 +300,7 @@ namespace CustomWaypoint
             SCREEN_MANAGER.spriteBasic.CurrentTechnique = SCREEN_MANAGER.spriteBasicPixel;
             batch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise, SCREEN_MANAGER.spriteBasic, null);
              
-                bool flag56 = PLAYER.greenArrows.Count > 0;
-                if (flag56)
+                if (PLAYER.greenArrows.Count > 0)
                 {
                     foreach (KeyValuePair<string, GreenArrow> greenArrow in CoOpSpRpG.PLAYER.greenArrows)
                     {
