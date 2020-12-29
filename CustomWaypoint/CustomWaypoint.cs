@@ -24,76 +24,76 @@ namespace CustomWaypoint
     public class Globals
     {
         public static Dictionary<string, GreenArrow> ArrowsStored = new Dictionary<string, GreenArrow>();
-      
+        public static Texture2D[] MenuArt;
+
     }
 
     [HarmonyPatch(typeof(UNavigationRev2), "Draw")]
         public class UNavigationRev2_Draw
         {
 
-        public static Texture2D[] MenuArt;
-
         [HarmonyPrefix]
             private static void Prefix(ref Dictionary<string, GreenArrow> __state)
             {
             __state = new Dictionary<string, GreenArrow>();
-            String SteamModsDirectory = System.IO.Path.GetFullPath(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), System.IO.Path.Combine(@"..\..\workshop\content\392080")));
-            String ModsDirectory = System.IO.Path.GetFullPath(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), System.IO.Path.Combine(@"Mods")));
+            if (Globals.MenuArt == null)
+            { 
+                String SteamModsDirectory = System.IO.Path.GetFullPath(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), System.IO.Path.Combine(@"..\..\workshop\content\392080")));
+                String ModsDirectory = System.IO.Path.GetFullPath(System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), System.IO.Path.Combine(@"Mods")));
             
-            List<string> Folders = new List<string>();
+                List<string> Folders = new List<string>();
 
-            Texture2D[] array1 = new Texture2D[]
-                  {
-                        null,
-                        SCREEN_MANAGER.MenuArt[225]
-                  };
+                Texture2D[] array1 = new Texture2D[]
+                      {
+                            null,
+                            SCREEN_MANAGER.MenuArt[225]
+                      };
 
-            MenuArt = array1;
+                Globals.MenuArt = array1;
 
-            if (System.IO.Directory.Exists(SteamModsDirectory))
-            {
-                var dirs = from dir in
-                 System.IO.Directory.EnumerateDirectories(SteamModsDirectory, "*",
-                    System.IO.SearchOption.AllDirectories)
-                           select dir;
-
-                foreach (var dir in dirs)
+                if (System.IO.Directory.Exists(SteamModsDirectory))
                 {
-                    Folders.Add(dir);
-                }
-            }
+                    var dirs = from dir in
+                     System.IO.Directory.EnumerateDirectories(SteamModsDirectory, "*",
+                        System.IO.SearchOption.AllDirectories)
+                               select dir;
 
-            if (System.IO.Directory.Exists(ModsDirectory))
-            {
-                Folders.Add(ModsDirectory);
-                var dirs = from dir in
-                 System.IO.Directory.EnumerateDirectories(ModsDirectory, "*",
-                    System.IO.SearchOption.AllDirectories)
-                           select dir;
-
-                foreach (var dir in dirs)
-                {
-                    Folders.Add(dir);
-                }
-            }
-
-            foreach (var folder in Folders)
-            {
-                if (System.IO.File.Exists(System.IO.Path.Combine(folder, "CustomWaypoint.xnb")))
-                {
-                    Game1.instance.Content.RootDirectory = folder;
-                    Texture2D[] array = new Texture2D[]
+                    foreach (var dir in dirs)
                     {
-                        null,
-                        Game1.instance.Content.Load<Texture2D>("CustomWaypoint")
-                    };
-
-                    MenuArt = array;
+                        Folders.Add(dir);
+                    }
                 }
-            }
 
+                if (System.IO.Directory.Exists(ModsDirectory))
+                {
+                    Folders.Add(ModsDirectory);
+                    var dirs = from dir in
+                     System.IO.Directory.EnumerateDirectories(ModsDirectory, "*",
+                        System.IO.SearchOption.AllDirectories)
+                               select dir;
+
+                    foreach (var dir in dirs)
+                    {
+                        Folders.Add(dir);
+                    }
+                }
+
+                foreach (var folder in Folders)
+                {
+                    if (System.IO.File.Exists(System.IO.Path.Combine(folder, "CustomWaypoint.xnb")))
+                    {
+                        Game1.instance.Content.RootDirectory = folder;
+                        Texture2D[] array = new Texture2D[]
+                        {
+                            null,
+                            Game1.instance.Content.Load<Texture2D>("CustomWaypoint")
+                        };
+
+                        Globals.MenuArt = array;
+                    }
+                }
             Game1.instance.Content.RootDirectory = "Content";
-
+            }
             Dictionary<string, GreenArrow> greenArrows = CoOpSpRpG.PLAYER.greenArrows;
                 foreach (var newArrow in greenArrows)
                     __state.Add(newArrow.Key, newArrow.Value);
@@ -125,9 +125,9 @@ namespace CustomWaypoint
                                 vector.Y = (float)(entry.Value.grid.Y * 256);
                                 if (entry.Key == "player_assigned")
                                 {
-                                    if (!(MenuArt[1] is null) && !(MenuArt is null))
+                                    if (!(Globals.MenuArt is null) && !(Globals.MenuArt[1] is null))
                                     { 
-                                    batch.Draw(MenuArt[1], vector + entry.Value.position / 781.25f, new Rectangle?(___greenArrowIcon), Color.White, 0f, UNavigationRev2.iconEconOffset, ___constantScale, SpriteEffects.None, 0f);
+                                    batch.Draw(Globals.MenuArt[1], vector + entry.Value.position / 781.25f, new Rectangle?(___greenArrowIcon), Color.White, 0f, UNavigationRev2.iconEconOffset, ___constantScale, SpriteEffects.None, 0f);
                                     }
                                     else
                                     {
